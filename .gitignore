@@ -3,10 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# SQLite databases
-*.db
-*.sqlite3
-
 # Environments & IDE
 .vscode/
 .idea/
