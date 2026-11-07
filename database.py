@@ -85,7 +85,7 @@ class DatabaseManager:
             SELECT * FROM profiles
             WHERE id = ?            
         """, (id,))
-        return cur.fetchall()
+        return cur.fetchone()
         
     def get_catalog(self):
         cur = self.conn.cursor()
