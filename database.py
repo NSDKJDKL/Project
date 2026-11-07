@@ -92,6 +92,31 @@ class DatabaseManager:
         cur.execute("SELECT * FROM catalog")
         return cur.fetchall()
     
+    def update_avatar(self, profile_id, avatar_path):
+        cur = self.conn.cursor()
+        cur.execute("UPDATE profiles SET avatar = ? WHERE id = ?", (avatar_path, profile_id))
+        self.conn.commit()
+        
+    def process_tick(self, profile_id):
+        cur = self.conn.cursor()
+        cur.execute("""
+            SELECT inv.id, cat.hashrate, cat.heat 
+            FROM inventory inv 
+            JOIN catalog cat ON inv.hardware_id = cat.id 
+            WHERE inv.profile_id = ? AND inv.slot_index >= 0
+        """, (profile_id,))
+        items = cur.fetchall()
+        
+        total_hashrate = sum(item["hashrate"] for item in items)
+        
+        if total_hashrate > 0:
+            earned = total_hashrate * 0.00001
+            cur.execute("UPDATE profiles SET crypto_balance = crypto_balance + ? WHERE id = ?", (earned, profile_id))
+            for item in items:
+                cur.execute("UPDATE inventory SET condition = condition - 0.5 WHERE id = ?", (item["id"],))
+                
+        self.conn.commit()
+    
     def del_profile(self, profile_id):
         cur = self.conn.cursor()
         try:

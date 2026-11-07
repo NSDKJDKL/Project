@@ -62,6 +62,8 @@ class AuthWindow(QDialog):
         
         if name:
             new_id = self.db.create_profile(name)
+            if self.avatar_path:
+                self.db.update_avatar(new_id, self.avatar_path)
             self.profile_id = new_id
             self.accept()
         else:
