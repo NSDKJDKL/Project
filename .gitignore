@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# PyInstaller build artifacts
+build/
+*.spec
+
 # Environments & IDE
 .vscode/
 .idea/
